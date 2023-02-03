@@ -9,6 +9,7 @@ namespace SeleniumWikipediaDemo
     public class Tests
     {
 
+
         [SetUp]
         public void Setup()
         {
@@ -18,51 +19,48 @@ namespace SeleniumWikipediaDemo
         [Test]
         public void Test()
         {
-            
+
             IWebDriver driver = new ChromeDriver();
             driver.Navigate().GoToUrl("https://www.wikipedia.org/");
 
-           
+
             IWebElement searchBox = driver.FindElement(By.Id("searchInput"));
             searchBox.SendKeys("Automation Testing");
 
-            
+
             IWebElement searchButton = driver.FindElement(By.XPath("//button[@type='submit']"));
             searchButton.Click();
 
             driver.Manage().Window.Maximize();
 
-            string currentTabHandle = driver.CurrentWindowHandle;
-
-        
-            ((IJavaScriptExecutor)driver).ExecuteScript("window.open;");
-
-            
-            foreach (string tabHandle in driver.WindowHandles)
+            string actualTitle = driver.Title;
+            string expectedTitle = "Test automation - Wikipedia";
+            if (actualTitle == expectedTitle)
             {
-                if (tabHandle != currentTabHandle)
+                Console.WriteLine("The page title is correct: " + actualTitle);
+            }
+            else
+            {
+                Console.WriteLine("The page title is incorrect. Expected: " + expectedTitle + " but was: " + actualTitle);
+            }
+
+            {
+                string expectedText = "Test automation can automate some repetitive but necessary tasks in a formalized testing process.";
+                if (driver.PageSource.Contains(expectedText))
                 {
-                    driver.SwitchTo().Window(tabHandle);
+                    Console.WriteLine("The expected text is present on the page.");
+                }
+                else
+                {
+                    Console.WriteLine("The expected text is not present on the page.");
+
+                    
+
 
                 }
-
             }
-            var body = driver.FindElement(By.TagName("body"));
-
-            Console.WriteLine("body");
-
-            Console.WriteLine(body);
-
-            // if (body.("Test automation can automate some repetitive but necessary tasks in a formalized testing process")) ;
-
-
-            ((IJavaScriptExecutor)driver).ExecuteScript(
-                "arguments[0].innerHTML = arguments[0].innerHTML.replace('Test automation can automate some repetitive but necessary tasks in a formalized testing process', '<span style=\"background-color: yellow;\">Test automation can automate some repetitive but necessary tasks in a formalized testing process</span>');",
-                body);
-
 
         }
-
     }
 }
 
